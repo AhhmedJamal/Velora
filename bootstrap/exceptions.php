@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Auth\AuthenticationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-
+// use DomainException;
 return function (Exceptions $exceptions) {
 
     // 1. ضمان إن أي إيرور يرجع JSON
@@ -35,5 +35,12 @@ return function (Exceptions $exceptions) {
             'message' => 'عفواً، لا تمتلك الصلاحية للقيام بهذا الإجراء.',
         ], 403);
     });
+
+    $exceptions->render(function (DomainException $e, Request $request) {
+    return response()->json([
+        'status' => 'error',
+        'message' => $e->getMessage(),
+    ], 422);
+});
 
 };
